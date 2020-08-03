@@ -18,16 +18,20 @@ class TasksController extends Controller
          $date =[];
          
          if(\Auth::check()){
-             $user = \Auth::user();
+         
+          $user = \Auth::user();
              
              $tasks = $user->tasks()->orderBy('created_at','desc')->paginate(10);
              
-             $date =[
-                 'user' => $user,
+             $data =[
                  'tasks'=>$tasks,
                  ];
+            return view('tasks.index', $data,[
+                
+                'task' => $tasks,
+                ]);
          }
-         return view('welcome', $date);
+         return view('welcome', $data);
     }
     /**
      * Show the form for creating a new resource.
@@ -90,9 +94,13 @@ class TasksController extends Controller
     {
         $task = Task::findOrFail($id);
         
+        if(\Auth::id() === $task->user_id){
+            
         return view('tasks.edit',[
             'task' =>$task,
             ]);
+        }
+        return redirect('/');
     }
 
     /**
@@ -115,6 +123,10 @@ class TasksController extends Controller
         $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
+        
+        if(\Auth::id() === $task->user_id){
+            $task->update();
+        }
         
         return redirect('/');
     }
