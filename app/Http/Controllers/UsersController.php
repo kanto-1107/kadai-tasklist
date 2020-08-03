@@ -22,7 +22,7 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
 
         
-        $user->loadRelationshipCounts();
+        
 
         
         $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);

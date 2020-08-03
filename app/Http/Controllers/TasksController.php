@@ -15,23 +15,19 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $data =[];
-        
-        if(\Auth::check()){
-            
-        $user = \Auth::user();
-        
-       $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
-       
-       
-       $data =[
-           'user' =>$user,
-           'tasks' => $tasks,
-           ] ;
-       
-        }
-        return view('welcome',$data);
-        
+         $date =[];
+         
+         if(\Auth::check()){
+             $user = \Auth::user();
+             
+             $tasks = $user->tasks()->orderBy('created_at','desc')->paginate(10);
+             
+             $date =[
+                 'user' => $user,
+                 'tasks'=>$tasks,
+                 ];
+         }
+         return view('welcome', $date);
     }
     /**
      * Show the form for creating a new resource.
@@ -74,6 +70,10 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::findOrFail($id);
+        
+        if($task->user->id != \Auth::user()->id){
+            return redirect('/');
+        }
         
         return view('tasks.show',[
             'task' =>$task, 
