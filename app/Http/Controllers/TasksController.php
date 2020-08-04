@@ -15,7 +15,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-         $date =[];
+         $data =[];
          
          if(\Auth::check()){
          
